@@ -1,0 +1,73 @@
+appId: com.himeditator.voicebridge
+productName: Voice Bridge
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md}'
+  - '!{LICENSE,README.md,README_en.md,README_ja.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!engine/*'
+  - '!docs/*'
+  - '!assets/*'
+  - '!.repomap/*'
+  - '!.virtualme/*'
+extraResources:
+  # For Windows
+  - from: ./engine/dist/main.exe
+    to: ./engine/main.exe
+  # For macOS and Linux
+  - from: ./engine/dist/main
+    to: ./engine/main
+win:
+  executableName: voice-bridge
+  icon: build/icon.png
+  # aria2 下载器：Windows 仅打包与构建架构匹配的二进制（x64 包只带 win/x64）
+  extraResources:
+    - from: ./aria2/win/x64
+      to: ./aria2/win/x64
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  oneClick: false
+  perMachine: true
+  allowToChangeInstallationDirectory: true
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+  # aria2 下载器：macOS 打包 arm64 / x86_64 两个子目录（运行时按 process.arch 选择）
+  extraResources:
+    - from: ./aria2/mac
+      to: ./aria2/mac
+dmg:
+  artifactName: ${name}-${version}.${ext}
+linux:
+  target:
+    # - AppImage
+    # - snap
+    # - deb
+    - tar.gz
+  maintainer: electronjs.org
+  category: Utility
+  # aria2 下载器
+  extraResources:
+    - from: ./aria2/linux
+      to: ./aria2/linux
+appImage:
+  artifactName: ${name}-${version}.${ext}
+npmRebuild: false
+publish:
+  provider: generic
+  url: https://example.com/auto-updates
+electronDownload:
+  mirror: https://npmmirror.com/mirrors/electron/

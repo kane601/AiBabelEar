@@ -1,0 +1,30 @@
+PYTHON: G:\AIAudio\VoiceBridge\voice-bridge\engine\.venv\Scripts\python.exe 3.11.5 (tags/v3.11.5:cce6ba9, Aug 24 2023, 14:38:34) [MSC v.1936 64 bit (AMD64)]
+pyaudiowpatch imported OK
+WASAPI host api info: {"index": 2, "structVersion": 1, "type": 13, "name": "Windows WASAPI", "deviceCount": 8, "defaultInputDevice": 17, "defaultOutputDevice": 16}
+=== ALL DEVICES ===
+{"index": 0, "name": "Microsoft 声音映射器 - Input", "maxInput": 2, "maxOutput": 0, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 1, "name": "麦克风 (UGREEN Camera 2K)", "maxInput": 2, "maxOutput": 0, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 2, "name": "麦克风 (Realtek(R) Audio)", "maxInput": 2, "maxOutput": 0, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 3, "name": "Microsoft 声音映射器 - Output", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 4, "name": "扬声器 (Realtek(R) Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 5, "name": "Realtek Digital Output (Realtek", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 6, "name": "Redmi 27 NU (NVIDIA High Defini", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 0}
+{"index": 7, "name": "主声音捕获驱动程序", "maxInput": 2, "maxOutput": 0, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 8, "name": "麦克风 (UGREEN Camera 2K)", "maxInput": 2, "maxOutput": 0, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 9, "name": "麦克风 (Realtek(R) Audio)", "maxInput": 2, "maxOutput": 0, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 10, "name": "主声音驱动程序", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 11, "name": "扬声器 (Realtek(R) Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 12, "name": "Realtek Digital Output (Realtek(R) Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 13, "name": "Redmi 27 NU (NVIDIA High Definition Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 44100.0, "isLoopback": false, "hostApi": 1}
+{"index": 14, "name": "Realtek Digital Output (Realtek(R) Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 48000.0, "isLoopback": false, "hostApi": 2}
+{"index": 15, "name": "Redmi 27 NU (NVIDIA High Definition Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 48000.0, "isLoopback": false, "hostApi": 2}
+{"index": 16, "name": "扬声器 (Realtek(R) Audio)", "maxInput": 0, "maxOutput": 2, "defaultRate": 48000.0, "isLoopback": false, "hostApi": 2}
+{"index": 17, "name": "麦克风 (UGREEN Camera 2K)", "maxInput": 2, "maxOutput": 0, "defaultRate": 48000.0, "isLoopback": false, "hostApi": 2}
+{"index": 18, "name": "麦克风 (Realtek(R) Audio)", "maxInput": 2, "maxOutput": 0, "defaultRate": 48000.0, "isLoopback": false, "hostApi": 2}
+{"index": 19, "name": "Realtek Digital Output (Realtek(R) Audio) [Loopback]", "maxInput": 2, "maxOutput": 0, "defaultRate": 48000.0, "isLoopback": true, "hostApi": 2}
+{"index": 20, "name": "Redmi 27 NU (NVIDIA High Definition Audio) [Loopback]", "maxInput": 2, "maxOutput": 0, "defaultRate": 48000.0, "isLoopback": true, "hostApi": 2}
+{"index": 21, "name": "扬声器 (Realtek(R) Audio) [Loopback]", "maxInput": 2, "maxOutput": 0, "defaultRate": 48000.0, "isLoopback": true, "hostApi": 2}
+=== LOOPBACK DEVICES ===
+{"index": 19, "name": "Realtek Digital Output (Realtek(R) Audio) [Loopback]", "maxInput": 2, "defaultRate": 48000.0, "isLoopback": true}
+{"index": 20, "name": "Redmi 27 NU (NVIDIA High Definition Audio) [Loopback]", "maxInput": 2, "defaultRate": 48000.0, "isLoopback": true}
+{"index": 21, "name": "扬声器 (Realtek(R) Audio) [Loopback]", "maxInput": 2, "defaultRate": 48000.0, "isLoopback": true}

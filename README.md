@@ -1,0 +1,112 @@
+# Voice Bridge
+
+跨平台实时字幕软件（当前版本 **2.0.1**）。从系统扬声器或麦克风采集音频，经语音识别与可选翻译，以悬浮窗口实时显示字幕。
+
+> 仓库根目录另有完整说明：[../README.md](../README.md)（推荐从根文档阅读）。  
+> 多语言简介：[English](./README_en.md) · [日本語](./README_ja.md)
+
+---
+
+## 文档导航
+
+| 主题 | 链接 |
+|------|------|
+| **完整项目说明**（功能 / 原理 / 架构 / 参数 / 编译打包） | [仓库根 README](../README.md) |
+| 用户使用手册 | [docs/user-manual/zh.md](./docs/user-manual/zh.md) |
+| 字幕引擎开发 | [docs/engine-manual/zh.md](./docs/engine-manual/zh.md) |
+| 引擎通信协议 | [docs/api-docs/caption-engine.md](./docs/api-docs/caption-engine.md) |
+| Electron IPC | [docs/api-docs/electron-ipc.md](./docs/api-docs/electron-ipc.md) |
+| Go 引擎 | [go-engine/README.md](./go-engine/README.md) |
+| 更新日志 | [docs/CHANGELOG.md](./docs/CHANGELOG.md) |
+
+---
+
+## 功能概览
+
+- **实时字幕**：系统音频输出（Loopback）或麦克风输入
+- **多引擎**：Gummy、GLM-ASR（云端）；Vosk、SOSV（本地）
+- **翻译**：Google / Ollama / OpenAI 兼容 API；Gummy 可自带翻译
+- **样式与日志**：字体与背景高度可配；字幕记录导出 `.srt` / `.json`
+- **桌面体验**：透明置顶字幕窗、系统托盘常驻、中英日界面
+
+架构要点：**Electron（Vue 3 UI）主进程** 通过 **CLI + stdout JSON + TCP** 驱动 **Python 字幕引擎**（`engine/`，可选 Go 实现 `go-engine/` 协议兼容替换）。
+
+---
+
+## 快速开始
+
+### 环境
+
+- Node.js 18+
+- Python ≥ 3.10（开发与打包引擎）
+- Windows 打包需本机可跑通 `engine` venv + PyInstaller
+
+### 安装与开发
+
+```bash
+npm install
+
+# Python 引擎（首次）
+cd engine
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+pip install -r requirements.txt
+cd ..
+
+npm run dev                     # 开发启动
+```
+
+### 打包 Windows
+
+```bash
+npm run build:win
+```
+
+产物：
+
+- 安装包：`dist/voice-bridge-2.0.1-setup.exe`
+- 免安装：`dist/win-unpacked/voice-bridge.exe`
+
+其它：`npm run build:mac` / `npm run build:linux` / `npm run build:unpack`
+
+### 常用脚本
+
+| 命令 | 说明 |
+|------|------|
+| `npm run dev` | 开发模式 |
+| `npm run build` | 仅构建 Electron 应用内容到 `out/` |
+| `npm run build:engine` | PyInstaller 编译 `engine/dist/main.exe` |
+| `npm run build:win` | 引擎 + 前端 + Windows 安装包 |
+| `npm run typecheck` | TS / Vue 类型检查 |
+
+---
+
+## 架构简图
+
+```text
+Vue 渲染进程  ←IPC→  Electron 主进程  ←stdout/TCP→  字幕引擎 (Python/Go)
+                          │
+                     配置 / 托盘 / 双窗口
+                     (字幕窗 + 设置窗)
+```
+
+原理、目录、`Controls`/`Styles` 参数表、CLI 一览、Go 编译方式等见 **[根目录 README](../README.md)**。
+
+---
+
+## 内置引擎一览
+
+| 引擎 | 类型 | 需准备 |
+|------|------|--------|
+| Gummy | 云端 | 阿里云百炼 API Key（或 `DASHSCOPE_API_KEY`） |
+| GLM-ASR | 云端 | 智谱 API Key |
+| Vosk | 本地 | [模型包](https://alphacephei.com/vosk/models) 解压路径 |
+| SOSV | 本地 | [SOSV 发布包](https://github.com/HiMeditator/auto-caption/releases/tag/sosv-model) |
+
+默认模型目录示例（Windows）：`%APPDATA%\VoiceBridge\Vosk`、`%APPDATA%\VoiceBridge\SOSV`。
+
+---
+
+## 许可证
+
+见 [LICENSE](./LICENSE)。云服务与第三方模型遵循各自条款。

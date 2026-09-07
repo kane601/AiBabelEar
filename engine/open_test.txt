@@ -1,0 +1,3 @@
+﻿device defaultRate 48000.0
+OPEN 16000 FAILED: OSError(-9997, 'Invalid sample rate')
+OPENED at 48000 OK
