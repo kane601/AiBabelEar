@@ -20,19 +20,19 @@ function getDesktopPath() {
 }
 
 // 各字幕引擎模型在用户机器上的默认下载/加载目录
-// Windows: %APPDATA%/VoiceBridge/<engine>
-// macOS:   ~/Library/Application Support/VoiceBridge/<engine>
-// Linux:   ~/.config/VoiceBridge/<engine>
+// Windows: %APPDATA%/AiVoiceEars/<engine>
+// macOS:   ~/Library/Application Support/AiVoiceEars/<engine>
+// Linux:   ~/.config/AiVoiceEars/<engine>
 function getModelBaseDir(): string {
   if (process.platform === 'win32') {
     const appData = process.env.APPDATA || app.getPath('appData')
-    if (appData) return path.join(appData, 'VoiceBridge')
+    if (appData) return path.join(appData, 'AiVoiceEars')
   }
   if (process.platform === 'darwin') {
-    return path.join(os.homedir(), 'Library', 'Application Support', 'VoiceBridge')
+    return path.join(os.homedir(), 'Library', 'Application Support', 'AiVoiceEars')
   }
   // Linux or other fallback
-  return path.join(os.homedir(), '.config', 'VoiceBridge')
+  return path.join(os.homedir(), '.config', 'AiVoiceEars')
 }
 const defaultVoskModelPath = path.join(getModelBaseDir(), 'Vosk')
 const defaultSosvModelPath = path.join(getModelBaseDir(), 'SOSV')

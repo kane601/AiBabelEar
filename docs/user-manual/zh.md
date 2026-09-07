@@ -1,10 +1,10 @@
-# Auto Caption 用户手册
+# AiVoiceEars 用户手册
 
 对应版本：v1.1.1
 
 ## 软件简介
 
-Auto Caption 是一个跨平台的字幕显示软件，能够实时获取系统音频输入（录音）或输出（播放声音）的流式数据，并调用音频转文字的模型生成对应音频的字幕。软件提供的默认字幕引擎（使用阿里云 Gummy 模型）支持九种语言（中、英、日、韩、德、法、俄、西、意）的识别与翻译。
+AiVoiceEars 是一个跨平台的字幕显示软件，能够实时获取系统音频输入（录音）或输出（播放声音）的流式数据，并调用音频转文字的模型生成对应音频的字幕。软件提供的默认字幕引擎（使用阿里云 Gummy 模型）支持九种语言（中、英、日、韩、德、法、俄、西、意）的识别与翻译。
 
 目前软件默认字幕引擎在 Windows、 macOS 和 Linux 平台下均拥有完整功能，在 macOS 要获取系统音频输出需要额外配置。
 
@@ -299,7 +299,7 @@ python main.py \
 ```bash
 python main.py \
 -e vosk \
--vosk D:\Projects\auto-caption\engine\models\vosk-model-small-cn-0.22 \
+-vosk D:\Projects\ai-voice-ears\engine\models\vosk-model-small-cn-0.22 \
 -a 0 \
 -d 1 \
 -t en \
@@ -310,7 +310,7 @@ python main.py \
 ```bash
 python main.py \
 -e sosv \
--sosv D:\\Projects\\auto-caption\\engine\\models\\sosv-int8 \
+-sosv D:\\Projects\\ai-voice-ears\\engine\\models\\sosv-int8 \
 -a 1 \
 -d 1 \
 -s auto \

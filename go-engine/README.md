@@ -1,6 +1,6 @@
-# VoiceBridge Engine (Go)
+# AiVoiceEars Engine (Go)
 
-Go 重实现的 VoiceBridge 转写/翻译引擎，是 `engine/`(Python) 的 drop-in 替换。
+Go 重实现的 AiVoiceEars 转写/翻译引擎，是 `engine/`(Python) 的 drop-in 替换。
 与 Node（`src/main/utils/CaptionEngine.ts`、`audioDevices.ts`）的通信契约**完全不变**。
 
 ## 目录结构
@@ -13,7 +13,7 @@ go-engine/
 │   ├── audio/      # WASAPI 采集(go-wca)、设备枚举、下混/重采样、WAV 录音
 │   ├── recognizer/ # 识别器接口 + GLM(HTTP)/Gummy(WebSocket)/SOSV(cgo)/Vosk(cgo)
 │   ├── translate/  # Ollama/OpenAI 兼容 + Google 翻译
-│   └── model/      # 默认模型目录(%APPDATA%/VoiceBridge/<engine>)
+│   └── model/      # 默认模型目录(%APPDATA%/AiVoiceEars/<engine>)
 └── go.mod
 ```
 

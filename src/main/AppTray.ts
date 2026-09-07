@@ -51,7 +51,7 @@ export function createAppTray(): void {
   }
 
   tray = new Tray(image)
-  tray.setToolTip('Voice Bridge')
+  tray.setToolTip('AiVoiceEars')
   tray.setContextMenu(buildContextMenu())
 
   // Windows：双击托盘显示字幕窗口

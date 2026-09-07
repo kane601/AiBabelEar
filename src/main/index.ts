@@ -29,7 +29,7 @@ process.on('uncaughtException', (error: unknown) => {
 })
 
 app.whenReady().then(() => {
-  electronApp.setAppUserModelId('com.himeditator.voicebridge')
+  electronApp.setAppUserModelId('com.himeditator.aivoiceears')
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)

@@ -1,6 +1,6 @@
 {
-  "name": "voice-bridge",
-  "productName": "Voice Bridge",
+  "name": "ai-voice-ears",
+  "productName": "AiVoiceEars",
   "version": "2.0.1",
   "description": "A cross-platform subtitle display software.",
   "main": "./out/main/index.js",

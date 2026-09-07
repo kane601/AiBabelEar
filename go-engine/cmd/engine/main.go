@@ -1,4 +1,4 @@
-// Command engine is the Go reimplementation of the VoiceBridge
+// Command engine is the Go reimplementation of the AiVoiceEars
 // transcription/translation engine. It is a drop-in replacement for the Python
 // main.exe: it speaks the exact same CLI, stdout line protocol and TCP control
 // protocol expected by src/main/utils/CaptionEngine.ts.

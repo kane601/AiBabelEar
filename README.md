@@ -1,4 +1,4 @@
-# Voice Bridge
+# AiVoiceEars
 
 跨平台实时字幕软件（当前版本 **2.0.1**）。从系统扬声器或麦克风采集音频，经语音识别与可选翻译，以悬浮窗口实时显示字幕。
 
@@ -64,8 +64,8 @@ npm run build:win
 
 产物：
 
-- 安装包：`dist/voice-bridge-2.0.1-setup.exe`
-- 免安装：`dist/win-unpacked/voice-bridge.exe`
+- 安装包：`dist/ai-voice-ears-2.0.1-setup.exe`
+- 免安装：`dist/win-unpacked/ai-voice-ears.exe`
 
 其它：`npm run build:mac` / `npm run build:linux` / `npm run build:unpack`
 
@@ -103,7 +103,7 @@ Vue 渲染进程  ←IPC→  Electron 主进程  ←stdout/TCP→  字幕引擎 
 | Vosk | 本地 | [模型包](https://alphacephei.com/vosk/models) 解压路径 |
 | SOSV | 本地 | [SOSV 发布包](https://github.com/HiMeditator/auto-caption/releases/tag/sosv-model) |
 
-默认模型目录示例（Windows）：`%APPDATA%\VoiceBridge\Vosk`、`%APPDATA%\VoiceBridge\SOSV`。
+默认模型目录示例（Windows）：`%APPDATA%\AiVoiceEars\Vosk`、`%APPDATA%\AiVoiceEars\SOSV`。
 
 ---
 

@@ -108,7 +108,7 @@ UI / i18n / 配置结构 / 模型下载源(aria2) / 自动更新 — 无需改�
 2. **Vosk cgo 依赖系统头文件**：`vosk-api/go` 的 cgo 需要 `vosk_api.h` 与 `libvosk`，模块本身不含；需在构建机安装 Vosk C 库或将头文件/库置入 `src/`。
 3. **Gummy WebSocket 协议字段**基于公开 DashScope realtime 文档实现，需在真实账号联调 `StartTranscription`/`TranslationInfo` 等字段名。
 4. **识别率基线对比**（文档 8.7）：需在真实机器上用同一段多语言音频分别跑 Python 与 Go 引擎，按 `command` 比对 stdout JSON，确认识别文本一致率与协议字段 100% 兼容。
-5. **前端联动确认**：`error`/`kill` 弹窗、`isModelAvailable()` 模型路径探测需与 `CaptionEngine.ts` 对齐（模型目录结构已保持一致：`%APPDATA%/VoiceBridge/<engine>`）。
+5. **前端联动确认**：`error`/`kill` 弹窗、`isModelAvailable()` 模型路径探测需与 `CaptionEngine.ts` 对齐（模型目录结构已保持一致：`%APPDATA%/AiVoiceEars/<engine>`）。
 
 ---
 

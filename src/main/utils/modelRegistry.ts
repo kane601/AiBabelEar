@@ -55,8 +55,8 @@ export function getModelById(engine: ModelEngine, id: string): ModelInfo | undef
   return MODEL_REGISTRY.find((m) => m.engine === engine && m.id === id)
 }
 
-/** 模型默认安装根目录：%APPDATA%/VoiceBridge/<Vosk|SOSV> */
+/** 模型默认安装根目录：%APPDATA%/AiVoiceEars/<Vosk|SOSV> */
 export function getModelBaseDir(engine: ModelEngine): string {
   const sub = engine === 'vosk' ? 'Vosk' : 'SOSV'
-  return path.join(app.getPath('appData'), 'VoiceBridge', sub)
+  return path.join(app.getPath('appData'), 'AiVoiceEars', sub)
 }

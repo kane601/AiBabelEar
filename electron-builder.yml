@@ -1,5 +1,5 @@
-appId: com.himeditator.voicebridge
-productName: Voice Bridge
+appId: com.himeditator.aivoiceears
+productName: AiVoiceEars
 directories:
   buildResources: build
 files:
@@ -23,7 +23,7 @@ extraResources:
   - from: ./engine/dist/main
     to: ./engine/main
 win:
-  executableName: voice-bridge
+  executableName: ai-voice-ears
   icon: build/icon.png
   # aria2 下载器：Windows 仅打包与构建架构匹配的二进制（x64 包只带 win/x64）
   extraResources:

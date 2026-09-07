@@ -1,7 +1,7 @@
 <div align="center" >
     <img src="./build/icon.png" width="100px" height="100px"/>
-    <h1 align="center">auto-caption</h1>
-    <p>Auto Caption はクロスプラットフォームのリアルタイム字幕表示ソフトウェアです。</p>
+    <h1 align="center">AiVoiceEars</h1>
+    <p>AiVoiceEars はクロスプラットフォームのリアルタイム字幕表示ソフトウェアです。</p>
     <p>
       <a href="https://github.com/HiMeditator/auto-caption/releases"><img src="https://img.shields.io/badge/release-1.1.1-blue"></a>
       <a href="https://github.com/HiMeditator/auto-caption/issues"><img src="https://img.shields.io/github/issues/HiMeditator/auto-caption?color=orange"></a>
@@ -29,7 +29,7 @@ SOSV モデルダウンロード: [Shepra-ONNX SenseVoice Model](https://github.
 
 ## 📚 関連ドキュメント
 
-[Auto Caption ユーザーマニュアル](./docs/user-manual/ja.md)
+[AiVoiceEars ユーザーマニュアル](./docs/user-manual/ja.md)
 
 [字幕エンジン説明ドキュメント](./docs/engine-manual/ja.md)
 
@@ -63,7 +63,7 @@ https://github.com/user-attachments/assets/9c188d78-9520-4397-bacf-4c8fdcc54874
 | Kali Linux 2022.3  | x64          | ✅                 | ✅                   |
 | Kylin Server V10 SP3 | x64 | ✅ | ✅ |
 
-macOS および Linux プラットフォームでシステムオーディオ出力を取得するには追加設定が必要です。詳細は[Auto Captionユーザーマニュアル](./docs/user-manual/ja.md)をご覧ください。
+macOS および Linux プラットフォームでシステムオーディオ出力を取得するには追加設定が必要です。詳細は[AiVoiceEarsユーザーマニュアル](./docs/user-manual/ja.md)をご覧ください。
 
 ソフトウェアをダウンロードした後、自分のニーズに応じて対応するモデルを選択し、モデルを設定する必要があります。
 

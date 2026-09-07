@@ -20,7 +20,7 @@ from utils import google_translate, ollama_translate
 
 class SosvRecognizer:
     """
-    使用 Sense Voice 非流式模型处理流式音频数据，并在标准输出中输出 Auto Caption 软件可读取的 JSON 字符串数据
+    使用 Sense Voice 非流式模型处理流式音频数据，并在标准输出中输出 AiVoiceEars 软件可读取的 JSON 字符串数据
 
     初始化参数：
         model_path: Shepra ONNX Sense Voice 识别模型路径

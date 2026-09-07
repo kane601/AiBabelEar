@@ -45,7 +45,7 @@ def resolve_vosk_model_path(model_path: str) -> str:
 
 class VoskRecognizer:
     """
-    使用 Vosk 引擎流式处理的音频数据，并在标准输出中输出与 Auto Caption 软件可读取的 JSON 字符串数据
+    使用 Vosk 引擎流式处理的音频数据，并在标准输出中输出与 AiVoiceEars 软件可读取的 JSON 字符串数据
 
     初始化参数：
         model_path: Vosk 识别模型路径

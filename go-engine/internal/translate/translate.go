@@ -15,7 +15,7 @@ import (
 	"engine/internal/protocol"
 )
 
-// langMap maps VoiceBridge language codes to English names for the prompt.
+// langMap maps AiVoiceEars language codes to English names for the prompt.
 var langMap = map[string]string{
 	"en":    "English",
 	"es":    "Spanish",
