@@ -115,6 +115,24 @@
           placeholder="glm-asr-2512"
         ></a-input>
       </div>
+      <div class="input-item" v-if="currentEngine === 'gummy'">
+        <a-popover placement="right">
+          <template #content>
+            <p class="label-hover-info">{{ $t('engine.apikeyInfo') }}</p>
+            <p><a href="https://bailian.console.aliyun.com" target="_blank">
+              https://bailian.console.aliyun.com
+            </a></p>
+          </template>
+          <span class="input-label info-label"
+            :style="{color: uiColor}"
+          >ALI {{ $t('engine.apikey') }}</span>
+        </a-popover>
+        <a-input
+          class="input-area"
+          type="password"
+          v-model:value="currentAPI_KEY"
+        />
+      </div>
     </a-card>
 
     <a-card size="small" class="engine-page-card" :title="$t('engine.device')">
