@@ -1,6 +1,6 @@
 # AiBabelEar
 
-跨平台实时字幕软件（当前版本 **2.1.0**）。从系统扬声器或麦克风采集音频，经语音识别与可选翻译，以悬浮窗口实时显示字幕。
+跨平台实时字幕软件（当前版本 **2.1.1**）。从系统扬声器或麦克风采集音频，经语音识别与可选翻译，以悬浮窗口实时显示字幕。
 
 > 仓库根目录另有完整说明：[../README.md](../README.md)（推荐从根文档阅读）。  
 > 多语言简介：[English](./README_en.md) · [日本語](./README_ja.md)
@@ -64,7 +64,7 @@ npm run build:win
 
 产物：
 
-- 安装包：`dist/ai-babel-ear-2.1.0-setup.exe`
+- 安装包：`dist/ai-babel-ear-2.1.1-setup.exe`
 - 免安装：`dist/win-unpacked/ai-babel-ear.exe`
 
 ### 多平台打包脚本
