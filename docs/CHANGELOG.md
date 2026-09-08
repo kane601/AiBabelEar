@@ -201,3 +201,11 @@
 
 - 新增 GitHub Actions：发布 Release（或推送 `v*` tag）后自动编译各平台安装包并回传产物
 
+## v2.0.2
+
+### 修复bug
+
+- 修复 macOS 打包失败：未配置签名证书时 `CSC_LINK` 为空字符串被当作证书路径，导致 electron-builder 报 "not a file"
+- 修复 macOS Intel 上引擎依赖安装失败：`llvmlite` 无 x86_64 预编译包，需先安装 LLVM 并指定 `LLVM_CONFIG`
+- 修复 electron-builder 在检测到 tag 时尝试发布到占位更新地址的问题，改为 `--publish never` 由 Actions 统一上传
+

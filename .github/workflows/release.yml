@@ -76,7 +76,8 @@ jobs:
   build:
     name: Build (${{ matrix.platform }}-${{ matrix.arch }})
     needs: prepare
-    timeout-minutes: 60
+    # macOS Intel 上 llvmlite 需要从源码编译（无 x86_64 预编译包），耗时较长
+    timeout-minutes: 90
 
     strategy:
       fail-fast: false
@@ -103,12 +104,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      # electron-builder.yml 里配置了 npmmirror 源（本地构建加速），
-      # GitHub runner 上改用官方源，@electron/get 中环境变量优先级高于配置。
-      ELECTRON_MIRROR: https://github.com/electron/electron/releases/download/
-      # macOS 签名：未配置证书时显式关闭，避免构建器等待/尝试查找签名身份
-      CSC_LINK: ${{ secrets.MAC_CERTIFICATE }}
-      CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+      # 未配置证书时显式关闭签名身份自动发现，走 ad-hoc 签名即可。
+      # 注意：CSC_LINK / CSC_KEY_PASSWORD 不能在 job env 里“置空”——
+      # electron-builder 会把空字符串当成证书文件路径（path.resolve('') == 项目目录），
+      # 从而报 "… not a file"。因此证书只在下面确认 secret 存在时才导出。
+      MAC_CERTIFICATE: ${{ secrets.MAC_CERTIFICATE }}
       CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.MAC_CERTIFICATE != '' }}
 
     steps:
@@ -127,10 +127,23 @@ jobs:
           cache: pip
           cache-dependency-path: engine/requirements.txt
 
-      # macOS 上 engine/requirements.txt 依赖 pyaudio，需要先装 portaudio
-      - name: Install PortAudio (macOS)
+      # pyaudio（portaudio）与 llvmlite/numba 在 macOS 上需要本地库
+      - name: Install macOS build dependencies
         if: runner.os == 'macOS'
-        run: brew install portaudio
+        run: |
+          brew install portaudio
+          # resampy -> numba -> llvmlite：无预编译 wheel 时需本地编译，必须能找到 llvm-config
+          brew install llvm@20 || brew install llvm
+          LLVM_PREFIX="$(brew --prefix llvm@20 2>/dev/null || brew --prefix llvm)"
+          echo "LLVM_CONFIG=${LLVM_PREFIX}/bin/llvm-config" >> "$GITHUB_ENV"
+          echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
+          llvm-config --version
+
+      - name: Setup macOS code signing
+        if: runner.os == 'macOS' && env.MAC_CERTIFICATE != ''
+        run: |
+          echo "CSC_LINK=${MAC_CERTIFICATE}" >> "$GITHUB_ENV"
+          echo "CSC_KEY_PASSWORD=${{ secrets.MAC_CERTIFICATE_PASSWORD }}" >> "$GITHUB_ENV"
 
       - name: Install npm dependencies
         run: npm ci
@@ -139,7 +152,9 @@ jobs:
         run: node scripts/setup-engine.mjs
 
       - name: Build and package
-        run: node scripts/build-app.mjs --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
+        # --publish never：产物由下面的 softprops 上传到 Release，
+        # 否则 electron-builder 会因为检测到 tag 而尝试发布到 electron-builder.yml 里的占位地址
+        run: node scripts/build-app.mjs --platform ${{ matrix.platform }} --arch ${{ matrix.arch }} --publish never
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
