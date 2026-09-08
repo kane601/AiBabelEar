@@ -238,5 +238,5 @@
 ### 变更
 
 - 更新应用图标为现代扁平风格：紫罗兰色耳形 + 线框地球（多语言） + 字幕条（实时字幕）
-- 同步更新 `logo.png`、`build/icon.png`（512×512）、`build/icon.svg` 与 `build/icon.icns`
+- 同步更新 `logo.png`、`build/icon.png`（512×512）与 `build/icon.icns`，打包统一使用 `build/icon.png`
 
