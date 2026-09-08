@@ -2,7 +2,8 @@ name: Release Build
 
 # 触发方式：
 #   1) 在 GitHub 上发布（Publish）一个 Release 后自动编译各平台安装包并回传产物
-#   2) 手动 workflow_dispatch（可指定 tag，用于补构建 / 验证打包流程）
+#   2) 推送 v* tag（若该 tag 还没有 Release，会自动创建一个并附上安装包）
+#   3) 手动 workflow_dispatch（可指定 tag，用于补构建 / 验证打包流程）
 #
 # 说明：字幕引擎由 PyInstaller 本机原生编译，无法交叉编译，
 # 因此每个平台的安装包都在各自系统的 runner 上构建。
@@ -10,6 +11,9 @@ name: Release Build
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       tag:
@@ -148,12 +152,20 @@ jobs:
             dist/*.tar.gz
           if-no-files-found: error
 
+      # 仅在“推送 tag”触发时补齐 Release 正文（Release 已存在时不会覆写其正文）
+      - name: Download release notes
+        if: github.event_name == 'push'
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+
       - name: Attach artifacts to GitHub Release
         if: ${{ github.event_name != 'workflow_dispatch' || !inputs.dry_run }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.prepare.outputs.tag }}
           fail_on_unmatched_files: false
+          body_path: ${{ github.event_name == 'push' && 'release-notes.md' || '' }}
           files: |
             dist/*.exe
             dist/*.dmg

@@ -188,3 +188,16 @@
 - 取消字幕窗口的顶置选项，字幕窗口将始终处于顶置状态
 - 将字幕窗口顶置选项改为鼠标穿透选项，当图钉图标为实心时，表示启用鼠标穿透
 
+## v2.0.1
+
+### 新增功能
+
+- 新增多平台打包脚本：Windows（x64 / arm64）、macOS（arm64 / x64）、Linux（x64 / arm64）
+- 新增 `scripts/build-app.mjs` 通用打包入口，统一「引擎编译 → 前端构建 → electron-builder」流程
+- 新增 `scripts/setup-engine.mjs`，一键准备字幕引擎的 Python 虚拟环境
+- 新增 `scripts/prepare-release.mjs` 与 `scripts/collect-artifacts.mjs`，用于发布前校验与产物汇总
+
+### 自动化
+
+- 新增 GitHub Actions：发布 Release（或推送 `v*` tag）后自动编译各平台安装包并回传产物
+

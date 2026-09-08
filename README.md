@@ -104,7 +104,7 @@ npm run release:collect      # 汇总安装包
 
 ### 自动发布
 
-在 GitHub 上 Publish 一个 Release 后，`.github/workflows/release.yml` 会自动：
+在 GitHub 上 Publish 一个 Release、或推送 `v*` tag 后，`.github/workflows/release.yml` 会自动：
 
 1. 校验 tag 与 `package.json` 版本号一致，并从 `docs/CHANGELOG.md` 提取更新日志；
 2. 在 `windows-latest` / `macos-latest` / `macos-15-intel` / `ubuntu-latest` 上并行编译
