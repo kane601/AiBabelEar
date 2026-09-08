@@ -1,0 +1,163 @@
+name: Release Build
+
+# 触发方式：
+#   1) 在 GitHub 上发布（Publish）一个 Release 后自动编译各平台安装包并回传产物
+#   2) 手动 workflow_dispatch（可指定 tag，用于补构建 / 验证打包流程）
+#
+# 说明：字幕引擎由 PyInstaller 本机原生编译，无法交叉编译，
+# 因此每个平台的安装包都在各自系统的 runner 上构建。
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要构建的 tag（如 v2.0.1）；留空则取 package.json 的 version'
+        required: false
+        type: string
+      dry_run:
+        description: '仅构建并上传 workflow artifact，不写入 Release'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-build-${{ github.event.release.tag_name || inputs.tag || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ── 发布元信息：确定 tag / 版本，校验一致性，提取更新日志 ──────────────
+  prepare:
+    name: Prepare release metadata
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      version: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Resolve tag / version
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ github.event.release.tag_name || inputs.tag }}"
+          if [ -z "$TAG" ]; then
+            TAG="v$(node -p "require('./package.json').version")"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      # 版本不一致时（tag 与 package.json 不同步）直接失败，避免发布错误版本号的安装包
+      - name: Release pre-flight check
+        run: node scripts/prepare-release.mjs --tag "${{ steps.meta.outputs.tag }}" --notes-out release-notes.md
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release-notes.md
+
+  # ── 各平台安装包编译 ────────────────────────────────────────────────
+  build:
+    name: Build (${{ matrix.platform }}-${{ matrix.arch }})
+    needs: prepare
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            arch: x64
+          - os: macos-latest # Apple Silicon
+            platform: mac
+            arch: arm64
+          - os: macos-15-intel # Intel
+            platform: mac
+            arch: x64
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+          # Linux arm64 需要 arm64 宿主（如 ubuntu-24.04-arm 或自托管 runner），
+          # 确认 runner 可用后取消下面的注释即可。
+          # - os: ubuntu-24.04-arm
+          #   platform: linux
+          #   arch: arm64
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      # electron-builder.yml 里配置了 npmmirror 源（本地构建加速），
+      # GitHub runner 上改用官方源，@electron/get 中环境变量优先级高于配置。
+      ELECTRON_MIRROR: https://github.com/electron/electron/releases/download/
+      # macOS 签名：未配置证书时显式关闭，避免构建器等待/尝试查找签名身份
+      CSC_LINK: ${{ secrets.MAC_CERTIFICATE }}
+      CSC_KEY_PASSWORD: ${{ secrets.MAC_CERTIFICATE_PASSWORD }}
+      CSC_IDENTITY_AUTO_DISCOVERY: ${{ secrets.MAC_CERTIFICATE != '' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: engine/requirements.txt
+
+      # macOS 上 engine/requirements.txt 依赖 pyaudio，需要先装 portaudio
+      - name: Install PortAudio (macOS)
+        if: runner.os == 'macOS'
+        run: brew install portaudio
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Setup Python engine environment
+        run: node scripts/setup-engine.mjs
+
+      - name: Build and package
+        run: node scripts/build-app.mjs --platform ${{ matrix.platform }} --arch ${{ matrix.arch }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AiVoiceEars-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.zip
+            dist/*.tar.gz
+          if-no-files-found: error
+
+      - name: Attach artifacts to GitHub Release
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.dry_run }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          fail_on_unmatched_files: false
+          files: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.zip
+            dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

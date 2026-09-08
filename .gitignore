@@ -1,6 +1,7 @@
 node_modules
 dist
 out
+release-assets
 .DS_Store
 .eslintcache
 *.log*

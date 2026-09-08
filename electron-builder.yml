@@ -15,18 +15,16 @@ files:
   - '!assets/*'
   - '!.repomap/*'
   - '!.virtualme/*'
-extraResources:
-  # For Windows
-  - from: ./engine/dist/main.exe
-    to: ./engine/main.exe
-  # For macOS and Linux
-  - from: ./engine/dist/main
-    to: ./engine/main
+# 说明：字幕引擎产物按平台分别在下方声明。
+# 若放在顶层，Windows 构建时 ./engine/dist/main 不存在会导致 electron-builder 直接报错。
 win:
   executableName: ai-voice-ears
   icon: build/icon.png
-  # aria2 下载器：Windows 仅打包与构建架构匹配的二进制（x64 包只带 win/x64）
   extraResources:
+    # 字幕引擎（Windows）
+    - from: ./engine/dist/main.exe
+      to: ./engine/main.exe
+    # aria2 下载器：Windows 仅打包与构建架构匹配的二进制（x64 包只带 win/x64）
     - from: ./aria2/win/x64
       to: ./aria2/win/x64
 nsis:
@@ -45,12 +43,19 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   notarize: false
-  # aria2 下载器：macOS 打包 arm64 / x86_64 两个子目录（运行时按 process.arch 选择）
+  # 同时产出 dmg 与 zip（zip 为免安装版，也便于后续接入自动更新）
+  target:
+    - dmg
+    - zip
   extraResources:
+    # 字幕引擎（macOS）
+    - from: ./engine/dist/main
+      to: ./engine/main
+    # aria2 下载器：macOS 打包 arm64 / x86_64 两个子目录（运行时按 process.arch 选择）
     - from: ./aria2/mac
       to: ./aria2/mac
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}-${version}-${arch}.${ext}
 linux:
   target:
     # - AppImage
@@ -59,12 +64,15 @@ linux:
     - tar.gz
   maintainer: electronjs.org
   category: Utility
-  # aria2 下载器
   extraResources:
+    # 字幕引擎（Linux）
+    - from: ./engine/dist/main
+      to: ./engine/main
+    # aria2 下载器
     - from: ./aria2/linux
       to: ./aria2/linux
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}-${version}-${arch}.${ext}
 npmRebuild: false
 publish:
   provider: generic
