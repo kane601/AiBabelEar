@@ -209,3 +209,9 @@
 - 修复 macOS Intel 上引擎依赖安装失败：`llvmlite` 无 x86_64 预编译包，需先安装 LLVM 并指定 `LLVM_CONFIG`
 - 修复 electron-builder 在检测到 tag 时尝试发布到占位更新地址的问题，改为 `--publish never` 由 Actions 统一上传
 
+## v2.0.3
+
+### 修复bug
+
+- 修复 macOS 构建依赖安装失败：`GITHUB_PATH` 只对后续步骤生效，安装 LLVM 后需使用完整路径调用 `llvm-config`
+

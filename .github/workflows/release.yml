@@ -135,9 +135,10 @@ jobs:
           # resampy -> numba -> llvmlite：无预编译 wheel 时需本地编译，必须能找到 llvm-config
           brew install llvm@20 || brew install llvm
           LLVM_PREFIX="$(brew --prefix llvm@20 2>/dev/null || brew --prefix llvm)"
+          # 注意：GITHUB_PATH / GITHUB_ENV 只对后续 step 生效，本 step 内必须使用完整路径
+          "${LLVM_PREFIX}/bin/llvm-config" --version
           echo "LLVM_CONFIG=${LLVM_PREFIX}/bin/llvm-config" >> "$GITHUB_ENV"
           echo "${LLVM_PREFIX}/bin" >> "$GITHUB_PATH"
-          llvm-config --version
 
       - name: Setup macOS code signing
         if: runner.os == 'macOS' && env.MAC_CERTIFICATE != ''
