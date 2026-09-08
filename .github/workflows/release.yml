@@ -132,9 +132,12 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install portaudio
-          # resampy -> numba -> llvmlite：无预编译 wheel 时需本地编译，必须能找到 llvm-config
-          brew install llvm@20 || brew install llvm
-          LLVM_PREFIX="$(brew --prefix llvm@20 2>/dev/null || brew --prefix llvm)"
+          # resampy -> numba -> llvmlite：macOS x86_64 无预编译 wheel，需源码编译。
+          # llvmlite 0.49 的 CMake 会硬校验 LLVM 版本，只支持 22（llvm@20 会报
+          # "LLVM version is 20, llvmlite only officially supports 22"，brew 的 llvm 已是 23），
+          # 因此必须精确安装 llvm@22。
+          brew install llvm@22
+          LLVM_PREFIX="$(brew --prefix llvm@22)"
           # 注意：GITHUB_PATH / GITHUB_ENV 只对后续 step 生效，本 step 内必须使用完整路径
           "${LLVM_PREFIX}/bin/llvm-config" --version
           echo "LLVM_CONFIG=${LLVM_PREFIX}/bin/llvm-config" >> "$GITHUB_ENV"

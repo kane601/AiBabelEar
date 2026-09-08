@@ -215,3 +215,9 @@
 
 - 修复 macOS 构建依赖安装失败：`GITHUB_PATH` 只对后续步骤生效，安装 LLVM 后需使用完整路径调用 `llvm-config`
 
+## v2.0.4
+
+### 修复bug
+
+- 修复 macOS Intel 打包失败：`llvmlite 0.49` 源码编译硬性要求 LLVM 22，将构建依赖从 `llvm@20` 改为 `llvm@22`
+
