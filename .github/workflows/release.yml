@@ -163,7 +163,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AiVoiceEars-${{ matrix.platform }}-${{ matrix.arch }}
+          name: AiBabelEar-${{ matrix.platform }}-${{ matrix.arch }}
           path: |
             dist/*.exe
             dist/*.dmg

@@ -166,7 +166,7 @@ class ControlWindow {
     ipcMain.handle('control.vosk.models.status', (_, baseDir?: string) => {
       const dir = baseDir ||
         allConfig.controls.voskModelPath ||
-        path.join(app.getPath('appData'), 'AiVoiceEars', 'Vosk')
+        path.join(app.getPath('appData'), 'AiBabelEar', 'Vosk')
       return getVoskModelStatus(dir)
     })
 

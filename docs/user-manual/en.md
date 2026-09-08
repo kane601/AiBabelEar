@@ -1,4 +1,4 @@
-# AiVoiceEars User Manual
+# AiBabelEar User Manual
 
 Corresponding Version: v1.1.1
 
@@ -6,7 +6,7 @@ Corresponding Version: v1.1.1
 
 ## Software Introduction
 
-AiVoiceEars is a cross-platform caption display software that can real-time capture system audio input (recording) or output (playback) streaming data and use an audio-to-text model to generate captions for the corresponding audio. The default caption engine provided by the software (using Alibaba Cloud Gummy model) supports recognition and translation in nine languages (Chinese, English, Japanese, Korean, German, French, Russian, Spanish, Italian).
+AiBabelEar is a cross-platform caption display software that can real-time capture system audio input (recording) or output (playback) streaming data and use an audio-to-text model to generate captions for the corresponding audio. The default caption engine provided by the software (using Alibaba Cloud Gummy model) supports recognition and translation in nine languages (Chinese, English, Japanese, Korean, German, French, Russian, Spanish, Italian).
 
 The default caption engine currently has full functionality on Windows, macOS, and Linux platforms. Additional configuration is required to capture system audio output on macOS.
 
@@ -302,7 +302,7 @@ To specify the Vosk model, audio type as system audio output, translate to Engli
 ```bash
 python main.py \
 -e vosk \
--vosk D:\Projects\ai-voice-ears\engine\models\vosk-model-small-cn-0.22 \
+-vosk D:\Projects\ai-babel-ear\engine\models\vosk-model-small-cn-0.22 \
 -a 0 \
 -d 1 \
 -t en \
@@ -313,7 +313,7 @@ To specify the SOSV model, audio type as microphone, automatically select source
 ```bash
 python main.py \
 -e sosv \
--sosv D:\\Projects\\ai-voice-ears\\engine\\models\\sosv-int8 \
+-sosv D:\\Projects\\ai-babel-ear\\engine\\models\\sosv-int8 \
 -a 1 \
 -d 1 \
 -s auto \

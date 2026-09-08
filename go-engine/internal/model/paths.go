@@ -9,12 +9,12 @@ import (
 )
 
 // DefaultModelDir returns the per-engine model directory:
-//   - Windows: %APPDATA%/AiVoiceEars/<engine>
-//   - macOS:   ~/Library/Application Support/AiVoiceEars/<engine>
-//   - Linux:   ~/.config/AiVoiceEars/<engine>
+//   - Windows: %APPDATA%/AiBabelEar/<engine>
+//   - macOS:   ~/Library/Application Support/AiBabelEar/<engine>
+//   - Linux:   ~/.config/AiBabelEar/<engine>
 func DefaultModelDir(engine string) string {
 	base := appDataBase()
-	return filepath.Join(base, "AiVoiceEars", engine)
+	return filepath.Join(base, "AiBabelEar", engine)
 }
 
 func appDataBase() string {

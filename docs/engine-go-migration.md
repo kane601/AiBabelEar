@@ -1,4 +1,4 @@
-# AiVoiceEars Engine 模块 Go 语言重写技术方案
+# AiBabelEar Engine 模块 Go 语言重写技术方案
 
 > 版本：v1.0 ｜ 状态：方案评审 ｜ 适用范围：`engine/` 目录（Python 实时转写/翻译引擎）
 >
@@ -36,7 +36,7 @@
 
 **非目标**
 - 不改变前端 UI / i18n / 配置项。
-- 不改变模型下载逻辑、模型目录结构（`%APPDATA%/AiVoiceEars/<engine>`）。
+- 不改变模型下载逻辑、模型目录结构（`%APPDATA%/AiBabelEar/<engine>`）。
 - 不追求在本阶段就实现 100% 引擎覆盖（可分阶段，SOSV 优先）。
 
 ---
@@ -175,7 +175,7 @@ engine-go/
 │   │   ├── ollama.go            # go-openai（自定义 base_url）
 │   │   └── google.go            # 自写 HTTP
 │   └── model/
-│       └── paths.go             # default_model_dir（%APPDATA%/AiVoiceEars/<engine> 等）
+│       └── paths.go             # default_model_dir（%APPDATA%/AiBabelEar/<engine> 等）
 └── go.mod
 ```
 

@@ -12,7 +12,7 @@ from utils import stdout_cmd, stdout_obj, google_translate, ollama_translate
 
 class GlmRecognizer:
     """
-    使用 GLM-ASR 引擎处理音频数据，并在标准输出中输出 AiVoiceEars 软件可读取的 JSON 字符串数据
+    使用 GLM-ASR 引擎处理音频数据，并在标准输出中输出 AiBabelEar 软件可读取的 JSON 字符串数据
 
     初始化参数：
         url: GLM-ASR API URL

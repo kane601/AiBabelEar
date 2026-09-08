@@ -1,5 +1,5 @@
-appId: com.himeditator.aivoiceears
-productName: AiVoiceEars
+appId: com.himeditator.aibabelear
+productName: AiBabelEar
 directories:
   buildResources: build
 files:
@@ -18,7 +18,7 @@ files:
 # 说明：字幕引擎产物按平台分别在下方声明。
 # 若放在顶层，Windows 构建时 ./engine/dist/main 不存在会导致 electron-builder 直接报错。
 win:
-  executableName: ai-voice-ears
+  executableName: ai-babel-ear
   icon: build/icon.png
   extraResources:
     # 字幕引擎（Windows）

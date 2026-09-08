@@ -10,11 +10,11 @@ from .translation import ollama_translate, google_translate
 
 
 def default_model_dir(engine: str) -> str:
-    """返回 AiVoiceEars 各字幕引擎模型的默认下载/加载目录。
+    """返回 AiBabelEar 各字幕引擎模型的默认下载/加载目录。
 
-    Windows: %APPDATA%/AiVoiceEars/<engine>
-    macOS:   ~/Library/Application Support/AiVoiceEars/<engine>
-    Linux:   ~/.config/AiVoiceEars/<engine>
+    Windows: %APPDATA%/AiBabelEar/<engine>
+    macOS:   ~/Library/Application Support/AiBabelEar/<engine>
+    Linux:   ~/.config/AiBabelEar/<engine>
     """
     if os.name == 'nt':
         base = os.getenv('APPDATA', os.path.expanduser('~'))
@@ -22,4 +22,4 @@ def default_model_dir(engine: str) -> str:
         base = os.path.join(os.path.expanduser('~'), 'Library', 'Application Support')
     else:
         base = os.path.join(os.path.expanduser('~'), '.config')
-    return os.path.join(base, 'AiVoiceEars', engine)
+    return os.path.join(base, 'AiBabelEar', engine)

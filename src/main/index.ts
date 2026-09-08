@@ -1,6 +1,9 @@
 import { app, BrowserWindow } from 'electron'
 import { execSync } from 'child_process'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+import * as path from 'path'
+import * as fs from 'fs'
+import * as os from 'os'
 import { controlWindow } from './ControlWindow'
 
 // Windows 中文系统控制台默认代码页为 936(GBK)，而 Node 以 UTF-8 输出，
@@ -28,8 +31,46 @@ process.on('uncaughtException', (error: unknown) => {
   Log.error('[Uncaught] 主进程未捕获异常（已兜底，程序继续运行）:', msg)
 })
 
+// 项目由 AiVoiceEars 改名为 AiBabelEar：一次性迁移旧数据目录（模型、config.json），
+// 保证老用户升级后模型与配置不丢失。采用「目录不存在则整体改名，存在则仅搬移缺失条目」策略。
+function migrateLegacyDataDirs(): void {
+  let base: string
+  if (process.platform === 'win32') {
+    base = process.env.APPDATA || app.getPath('appData')
+  } else if (process.platform === 'darwin') {
+    base = path.join(os.homedir(), 'Library', 'Application Support')
+  } else {
+    base = path.join(os.homedir(), '.config')
+  }
+  const pairs: Array<[string, string]> = [
+    ['AiVoiceEars', 'AiBabelEar'], // 打包版 userData + 模型目录（Windows/macOS 打包版同目录）
+    ['ai-voice-ears', 'ai-babel-ear'] // 开发模式 Electron userData（取自 package.json name）
+  ]
+  for (const [legacyName, newName] of pairs) {
+    const legacyDir = path.join(base, legacyName)
+    const newDir = path.join(base, newName)
+    try {
+      if (!fs.existsSync(legacyDir)) continue
+      if (!fs.existsSync(newDir)) {
+        fs.renameSync(legacyDir, newDir)
+      } else {
+        for (const entry of fs.readdirSync(legacyDir)) {
+          const from = path.join(legacyDir, entry)
+          const to = path.join(newDir, entry)
+          if (!fs.existsSync(to)) fs.renameSync(from, to)
+        }
+        if (fs.readdirSync(legacyDir).length === 0) fs.rmdirSync(legacyDir)
+      }
+      Log.info(`Migrated legacy data dir: ${legacyDir} -> ${newDir}`)
+    } catch (e) {
+      Log.warn(`Migrate legacy data dir failed (${legacyDir}):`, e)
+    }
+  }
+}
+
 app.whenReady().then(() => {
-  electronApp.setAppUserModelId('com.himeditator.aivoiceears')
+  migrateLegacyDataDirs()
+  electronApp.setAppUserModelId('com.himeditator.aibabelear')
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)

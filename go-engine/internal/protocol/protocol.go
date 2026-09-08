@@ -1,5 +1,5 @@
 // Package protocol implements the stdout line protocol and the TCP control
-// channel used by the AiVoiceEars Node (Electron) host to talk to the engine.
+// channel used by the AiBabelEar Node (Electron) host to talk to the engine.
 //
 // Every message is a single line of UTF-8 JSON. This must stay byte-for-byte
 // compatible with engine/utils/sysout.py on the Python side.

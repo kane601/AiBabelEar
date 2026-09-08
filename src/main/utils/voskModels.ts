@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-// Vosk 各语言 -> 模型文件夹名关键字（用于在 %APPDATA%/AiVoiceEars/Vosk 下匹配具体模型子目录）。
+// Vosk 各语言 -> 模型文件夹名关键字（用于在 %APPDATA%/AiBabelEar/Vosk 下匹配具体模型子目录）。
 // 匹配规则：关键字前后为分隔符（_ - . 空格）或字符串边界，避免误匹配。
 export const VOSK_LANG_KEYWORDS: Record<string, RegExp> = {
   'en': /(^|[_\-.\s])en([_\-.\s]|$)/i,

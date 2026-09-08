@@ -67,7 +67,7 @@ export class CaptionEngine {
     if (engine === 'vosk') {
       const baseVoskPath =
         allConfig.controls.voskModelPath ||
-        path.join(app.getPath('appData'), 'AiVoiceEars', 'Vosk')
+        path.join(app.getPath('appData'), 'AiBabelEar', 'Vosk')
       const lang = allConfig.controls.sourceLang
       let resolved: string | null = null
       if (lang && lang !== 'auto') {
@@ -80,7 +80,7 @@ export class CaptionEngine {
     if (engine === 'sosv') {
       const sosvPath =
         allConfig.controls.sosvModelPath ||
-        path.join(app.getPath('appData'), 'AiVoiceEars', 'SOSV')
+        path.join(app.getPath('appData'), 'AiBabelEar', 'SOSV')
       const candidates = [
         path.join(sosvPath, 'sensevoice', 'model.onnx'),
         path.join(sosvPath, 'sensevoice', 'model.int8.onnx'),
@@ -126,7 +126,7 @@ export class CaptionEngine {
       }
       else if(allConfig.controls.engine === 'vosk'){
         const baseVoskPath = allConfig.controls.voskModelPath ||
-          path.join(app.getPath('appData'), 'AiVoiceEars', 'Vosk')
+          path.join(app.getPath('appData'), 'AiBabelEar', 'Vosk')
         // Vosk 是单模型引擎，必须把 -vosk 指向“具体的模型文件夹”，不能传容器目录。
         // 优先使用源语言对应的模型；选 auto 或无法解析时，回落到第一个可用模型；
         // 若手动把 voskModelPath 指向了某个具体模型文件夹，则直接使用它。
@@ -148,7 +148,7 @@ export class CaptionEngine {
       }
       else if(allConfig.controls.engine === 'sosv'){
         const sosvPath = allConfig.controls.sosvModelPath ||
-          path.join(app.getPath('appData'), 'AiVoiceEars', 'SOSV')
+          path.join(app.getPath('appData'), 'AiBabelEar', 'SOSV')
         this.command.push('-e', 'sosv')
         this.command.push('-s', allConfig.controls.sourceLang)
         this.command.push('-sosv', `"${sosvPath}"`)

@@ -221,3 +221,15 @@
 
 - 修复 macOS Intel 打包失败：`llvmlite 0.49` 源码编译硬性要求 LLVM 22，将构建依赖从 `llvm@20` 改为 `llvm@22`
 
+## v2.1.0
+
+### 变更
+
+- 产品名称由 AiVoiceEars 更名为 AiBabelEar，npm 包名同步为 `ai-babel-ear`
+- appId、可执行文件名、安装包名、窗口标题、托盘提示与中/英/日界面文案同步更新
+- 应用数据目录改为 `%APPDATA%/AiBabelEar/<Vosk|SOSV>`（macOS / Linux 同理）
+
+### 优化体验
+
+- 首次启动自动迁移旧数据目录（`AiVoiceEars` / `ai-voice-ears`），已下载的模型与配置文件不会丢失
+

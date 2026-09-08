@@ -1,7 +1,7 @@
 <div align="center" >
     <img src="./build/icon.png" width="100px" height="100px"/>
-    <h1 align="center">AiVoiceEars</h1>
-    <p>AiVoiceEars is a cross-platform real-time caption display software.</p>
+    <h1 align="center">AiBabelEar</h1>
+    <p>AiBabelEar is a cross-platform real-time caption display software.</p>
     <p>
       <a href="https://github.com/HiMeditator/auto-caption/releases"><img src="https://img.shields.io/badge/release-1.1.1-blue"></a>
       <a href="https://github.com/HiMeditator/auto-caption/issues"><img src="https://img.shields.io/github/issues/HiMeditator/auto-caption?color=orange"></a>
@@ -29,7 +29,7 @@ SOSV Model Download: [Shepra-ONNX SenseVoice Model](https://github.com/HiMeditat
 
 ## 📚 Documentation
 
-[AiVoiceEars User Manual](./docs/user-manual/en.md)
+[AiBabelEar User Manual](./docs/user-manual/en.md)
 
 [Caption Engine Documentation](./docs/engine-manual/en.md)
 
@@ -61,7 +61,7 @@ The software has been adapted for Windows, macOS, and Linux platforms. The teste
 | macOS Sequoia 15.5 | arm64        | ✅ [Additional config required](./docs/user-manual/en.md#capturing-system-audio-output-on-macos) | ✅        |
 | Ubuntu 24.04.2     | x64          | ✅                 | ✅                   |
 
-Additional configuration is required to capture system audio output on macOS and Linux platforms. See [AiVoiceEars User Manual](./docs/user-manual/en.md) for details.
+Additional configuration is required to capture system audio output on macOS and Linux platforms. See [AiBabelEar User Manual](./docs/user-manual/en.md) for details.
 
 
 After downloading the software, you need to select the corresponding model according to your needs and then configure the model.
