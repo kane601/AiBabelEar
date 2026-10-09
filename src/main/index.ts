@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, nativeTheme } from 'electron'
 import { execSync } from 'child_process'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import * as path from 'path'
@@ -81,6 +81,10 @@ app.whenReady().then(() => {
 
   allConfig.readConfig()
   allConfig.ensureModelDirs()
+
+  // 原生窗口标题栏（Windows/macOS 由系统绘制）跟随已保存的界面主题。
+  // 不设置的话标题栏会始终跟随系统明暗：应用内选了深色、标题栏却仍是浅色。
+  nativeTheme.themeSource = allConfig.uiTheme
 
   // 托盘常驻：启动时展示字幕窗口，关闭窗口后仍常驻托盘、不退出进程
   createAppTray()

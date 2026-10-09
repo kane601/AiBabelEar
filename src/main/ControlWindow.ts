@@ -225,6 +225,9 @@ class ControlWindow {
 
     ipcMain.on('control.uiTheme.change', (_, args) => {
       allConfig.uiTheme = args
+      // 同步原生标题栏明暗，使其与渲染层 antd 主题保持一致
+      // （Windows 标题栏由系统绘制，只改 antd 主题不会影响到它）
+      nativeTheme.themeSource = args
     })
 
     ipcMain.on('control.uiColor.change', (_, args) => {
