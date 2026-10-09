@@ -131,6 +131,7 @@
           class="input-area"
           type="password"
           v-model:value="currentAPI_KEY"
+          placeholder="sk-xxxxxxxx..."
         />
       </div>
     </a-card>
