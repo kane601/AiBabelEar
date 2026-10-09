@@ -13,6 +13,8 @@ const CAPTION_WINDOW_WIDTH = 800
 class CaptionWindow {
   window: BrowserWindow | undefined;
   private dragOrigin: [number, number] | null = null;
+  /** 字幕窗口是否被锁定：锁定后忽略拖拽，位置保持不变 */
+  private locked = false;
   /** 创建后是否在 ready-to-show 时自动显示 */
   private showWhenReady = false;
 
@@ -118,9 +120,12 @@ class CaptionWindow {
           // 即便其它路径意外改了宽度也会被即时拉回，杜绝“拖拽时窗口变大”。
           const bounds = this.window.getBounds()
           const newHeight = Math.round(height)
+          // 未锁定：保持底边固定（多行字幕向上长，不溢出屏幕）。
+          // 已锁定：顶边固定不动，位置严格保持，只让高度变化。
+          const newY = this.locked ? bounds.y : bounds.y + bounds.height - newHeight
           this.window.setBounds({
             x: bounds.x,
-            y: bounds.y + bounds.height - newHeight,
+            y: newY,
             width: CAPTION_WINDOW_WIDTH,
             height: newHeight
           })
@@ -135,19 +140,22 @@ class CaptionWindow {
       this.hide()
     })
 
-    ipcMain.on('caption.mouseEvents.ignore', (_, ignore: boolean) => {
-      if(this.window){
-        this.window.setIgnoreMouseEvents(ignore, { forward: ignore })
-      }
+    // 锁定/解锁字幕窗口位置（渲染层已拦截，这里是防止其它路径绕过的第二道防线）
+    ipcMain.on('caption.lock', (_, locked: boolean) => {
+      this.locked = !!locked
+      // 解锁时清掉残留拖拽起点，避免上一次未完成的拖拽突然生效
+      if (this.locked) this.dragOrigin = null
     })
 
     // 渲染进程用 JS 指针实现的窗口拖动
     ipcMain.on('caption.drag.start', () => {
+      if(this.locked) return
       if(this.window){
         this.dragOrigin = this.window.getPosition() as [number, number]
       }
     })
     ipcMain.on('caption.drag.move', (_, payload: { dx?: unknown; dy?: unknown }) => {
+      if(this.locked) return
       const dx = payload?.dx
       const dy = payload?.dy
       // setPosition 收到非有限数值会抛 native 转换异常
@@ -162,12 +170,20 @@ class CaptionWindow {
         Number.isFinite(dy)
       ) {
         try {
-          this.window.setPosition(
-            Math.round(this.dragOrigin[0] + (dx as number)),
-            Math.round(this.dragOrigin[1] + (dy as number))
-          )
+          // 关键修复：这里必须用 setBounds 显式锚定宽高，而不是 setPosition。
+          // Windows 上对 frameless + transparent 窗口高频调用 setPosition 时，
+          // DIP↔物理像素换算的取整误差会让窗口尺寸逐帧漂移（宽度持续增加），
+          // 且 minWidth/maxWidth 约束管不住原生 SetWindowPos 调用。
+          // 每帧以 CAPTION_WINDOW_WIDTH 锚定宽度、以当前高度锚定高度，彻底杜绝累积。
+          const current = this.window.getBounds()
+          this.window.setBounds({
+            x: Math.round(this.dragOrigin[0] + (dx as number)),
+            y: Math.round(this.dragOrigin[1] + (dy as number)),
+            width: CAPTION_WINDOW_WIDTH,
+            height: current.height
+          })
         } catch (e) {
-          Log.error('[Caption] setPosition 失败（已忽略）:', e)
+          Log.error('[Caption] setBounds 拖拽失败（已忽略）:', e)
         }
       }
     })

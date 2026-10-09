@@ -14,12 +14,18 @@
     }"
   >
     <div class="top-bar" :style="{ color: captionStyle.fontColor }">
-      <div class="option-item" @pointerdown.stop @click="pinCaptionWindow">
-        <PushpinFilled v-if="pinned" />
-        <PushpinOutlined v-else />
+      <div
+        class="option-item"
+        @pointerdown.stop
+        @click="toggleLock"
+        :title="locked ? $t('caption.unlock') : $t('caption.lock')"
+      >
+        <LockFilled v-if="locked" />
+        <UnlockOutlined v-else />
       </div>
       <div
         class="option-item"
+        :class="{ 'locked-item': locked }"
         @pointerdown.stop
         @click="toggleCaptionEngine"
         :title="engineEnabled ? $t('engine.stopEngine') : $t('engine.startEngine')"
@@ -27,10 +33,20 @@
         <PauseCircleOutlined v-if="engineEnabled" />
         <PlayCircleOutlined v-else />
       </div>
-      <div class="option-item" @pointerdown.stop @click="openControlWindow">
+      <div
+        class="option-item"
+        :class="{ 'locked-item': locked }"
+        @pointerdown.stop
+        @click="openControlWindow"
+      >
         <SettingOutlined />
       </div>
-      <div class="option-item" @pointerdown.stop @click="closeCaptionWindow">
+      <div
+        class="option-item"
+        :class="{ 'locked-item': locked }"
+        @pointerdown.stop
+        @click="closeCaptionWindow"
+      >
         <CloseOutlined />
       </div>
     </div>
@@ -93,7 +109,7 @@
 </template>
 
 <script setup lang="ts">
-import { PushpinOutlined, PushpinFilled, CloseOutlined, SettingOutlined, PlayCircleOutlined, PauseCircleOutlined } from '@ant-design/icons-vue';
+import { CloseOutlined, SettingOutlined, PlayCircleOutlined, PauseCircleOutlined, LockFilled, UnlockOutlined } from '@ant-design/icons-vue';
 import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useCaptionStyleStore } from '@renderer/stores/captionStyle';
 import { useCaptionLogStore } from '@renderer/stores/captionLog';
@@ -114,7 +130,8 @@ const engineControl = useEngineControlStore();
 const { engineEnabled } = storeToRefs(engineControl);
 const caption = ref();
 const windowHeight = ref(100);
-const pinned = ref(false);
+// 锁定窗口：锁定后禁止拖拽与其它按钮操作，窗口固定在该位置显示
+const locked = ref(false);
 
 // QQ音乐歌词式效果：启动短暂显示背景，随后淡出为透明（仅显示文字）；
 // 鼠标悬停时背景与标题栏浮现，移开后再淡出。
@@ -149,9 +166,12 @@ function withAlpha(hex: string, alpha: number): string {
   const a = Math.max(0, Math.min(255, Math.round(alpha * 255))).toString(16).padStart(2, '0')
   return `#${h}${a}`
 }
-// 空闲淡底需要足够 alpha：Windows 透明窗口的透明像素会被 OS 穿透、收不到鼠标事件，
-// 必须保留一层足以命中且不穿透的淡色底（仅鼠标进入窗口那一刻需要它，之后背景变实即稳定）。
-const idleBg = computed(() => withAlpha(captionStyle.background, 0.3))
+// 空闲时的底：压到极低 alpha（约 1.5%），视觉上基本全透明，只剩字幕文字。
+// 为什么不能设为 0：Windows 上分层窗口 alpha 为 0 的像素不参与命中测试，
+// 鼠标事件会穿透到下层窗口，hover 再也唤不回背景与顶栏。
+// 而 alpha 只要 >= 1/255 即可命中，故取 ~1.5% 兼顾「几乎隐形」与「可靠接收鼠标事件」。
+const IDLE_BG_ALPHA = 0.015
+const idleBg = computed(() => withAlpha(captionStyle.background, IDLE_BG_ALPHA))
 
 onMounted(() => {
   const resizeObserver = new ResizeObserver(entries => {
@@ -170,49 +190,72 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (idleTimer) clearTimeout(idleTimer)
+  if (dragRafId) { cancelAnimationFrame(dragRafId); dragRafId = 0 }
 });
 
-function pinCaptionWindow() {
-  pinned.value = !pinned.value;
-  window.electron.ipcRenderer.send('caption.mouseEvents.ignore', pinned.value)
+// 锁定/解锁字幕窗口。锁定按钮本身始终可点（否则无法解锁），
+// 其余按钮与拖拽均在 locked 时失效。
+function toggleLock() {
+  locked.value = !locked.value;
+  window.electron.ipcRenderer.send('caption.lock', locked.value)
 }
 
 function openControlWindow() {
+  if (locked.value) return
   window.electron.ipcRenderer.send('caption.controlWindow.activate')
 }
 
 // 在顶部 start/stop 按钮：控制实时字幕引擎的启停（与设置页共用 control.engine.start/stop）
 function toggleCaptionEngine() {
+  if (locked.value) return
   window.electron.ipcRenderer.send(
     engineEnabled.value ? 'control.engine.stop' : 'control.engine.start'
   )
 }
 
 function closeCaptionWindow() {
+  if (locked.value) return
   window.electron.ipcRenderer.send('caption.window.close')
 }
 
 // 窗口拖动：用 JS 指针事件实现（setPointerCapture 保证移出窗口仍跟随），
 // 避免 -webkit-app-region: drag 吞掉 hover 所需的 mousemove 事件。
+// pointermove 用 rAF 节流：每帧最多发一次 IPC，避免高频 native 窗口操作
+// 放大 Windows 上 DIP 换算取整误差导致的尺寸漂移。
 let dragging = false
 let dragStartX = 0
 let dragStartY = 0
+let dragRafId = 0
+let dragLastDx = 0
+let dragLastDy = 0
 function onCaptionPointerDown(e: PointerEvent) {
+  // 锁定状态下禁止拖拽：不进入拖拽态、不抓取指针、不通知主进程记录起点
+  if (locked.value) return
   dragging = true
   dragStartX = e.screenX
   dragStartY = e.screenY
+  dragLastDx = 0
+  dragLastDy = 0
   ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
   window.electron.ipcRenderer.send('caption.drag.start')
 }
 function onCaptionPointerMove(e: PointerEvent) {
   if (!dragging) return
-  window.electron.ipcRenderer.send('caption.drag.move', {
-    dx: e.screenX - dragStartX,
-    dy: e.screenY - dragStartY
+  dragLastDx = e.screenX - dragStartX
+  dragLastDy = e.screenY - dragStartY
+  if (dragRafId) return
+  dragRafId = requestAnimationFrame(() => {
+    dragRafId = 0
+    if (!dragging) return
+    window.electron.ipcRenderer.send('caption.drag.move', {
+      dx: dragLastDx,
+      dy: dragLastDy
+    })
   })
 }
 function onCaptionPointerUp(e: PointerEvent) {
   dragging = false
+  if (dragRafId) { cancelAnimationFrame(dragRafId); dragRafId = 0 }
   try { (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId) } catch {}
 }
 </script>
@@ -284,5 +327,15 @@ function onCaptionPointerUp(e: PointerEvent) {
 
 .option-item:hover {
   background-color: #2221;
+}
+
+/* 锁定后其它按钮彻底失效。
+   用 pointer-events: none 在 DOM 层直接阻断鼠标事件：
+   元素根本收不到 pointerdown/click/hover，比单纯在 JS 里 return 更可靠，
+   也不依赖任何运行时状态判断的正确性。 */
+.option-item.locked-item {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 </style>

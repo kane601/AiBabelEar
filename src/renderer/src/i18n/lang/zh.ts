@@ -192,5 +192,9 @@ export default {
     "copySuccess": "字幕已复制到剪贴板",
     "clear": "清空记录",
     "title2": "日志记录"
+  },
+  caption: {
+    "lock": "锁定窗口位置",
+    "unlock": "解锁窗口位置"
   }
 }

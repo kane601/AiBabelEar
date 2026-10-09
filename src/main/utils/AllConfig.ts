@@ -50,7 +50,7 @@ const defaultStyles: Styles = {
   transDisplay: true,
   transFontFamily: 'sans-serif',
   transFontSize: 24,
-  transFontColor: '#000000',
+  transFontColor: '#5AA9E6',
   transFontWeight: 4,
   textShadow: false,
   offsetX: 2,

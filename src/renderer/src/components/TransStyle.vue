@@ -62,7 +62,7 @@ const { changeSignal } = storeToRefs(captionStyle)
 const currentTransDisplay = ref(true)
 const currentTransFontFamily = ref('sans-serif')
 const currentTransFontSize = ref(24)
-const currentTransFontColor = ref('#000000')
+const currentTransFontColor = ref('#5AA9E6')
 const currentTransFontWeight = ref(4)
 
 let syncingFromStore = false

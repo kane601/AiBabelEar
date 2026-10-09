@@ -192,5 +192,9 @@ export default {
     "copySuccess": "Subtitle copied to clipboard",
     "clear": "Clear Log",
     "title2": "Software Log"
+  },
+  caption: {
+    "lock": "Lock window position",
+    "unlock": "Unlock window position"
   }
 }

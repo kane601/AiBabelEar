@@ -192,5 +192,9 @@ export default {
     "copySuccess": "字幕がクリップボードにコピーされました",
     "clear": "記録をクリア",
     "title2": "ログ記録"
+  },
+  caption: {
+    "lock": "ウィンドウ位置をロック",
+    "unlock": "ウィンドウ位置のロックを解除"
   }
 }

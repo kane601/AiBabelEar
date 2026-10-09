@@ -16,7 +16,7 @@ export const useCaptionStyleStore = defineStore('captionStyle', () => {
   const transDisplay = ref<boolean>(true)
   const transFontFamily = ref<string>('sans-serif')
   const transFontSize = ref<number>(24)
-  const transFontColor = ref<string>('#000000')
+  const transFontColor = ref<string>('#5AA9E6')
   const transFontWeight = ref<number>(4)
   const textShadow = ref<boolean>(false)
   const offsetX = ref<number>(2)
