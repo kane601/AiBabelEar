@@ -35,12 +35,15 @@ class SosvRecognizer:
             model_path = model_path.strip().strip('"')
         if not model_path:
             model_path = default_model_dir('SOSV')
-        self.model_path = model_path
+        self.source = source
+        self.target = target
+        # 兼容解压后多出一层 sosv/ 子目录的情况（模型包内部结构为 <dir>/sosv/...）
+        self.model_path = self._resolve_model_root(model_path)
         self.ext = ""
         if self.model_path[-4:] == "int8":
             self.ext = ".int8"
-        self.source = source
-        self.target = target
+        # 加载前先校验文件，缺失时给出明确的中文提示而非 sherpa_onnx 的底层英文报错
+        self._check_model_files()
         if trans_model == 'google':
             self.trans_func = google_translate
         else:
@@ -51,6 +54,51 @@ class SosvRecognizer:
         self.time_str = ''
         self.cur_id = 0
         self.prev_content = ''
+
+    def _resolve_model_root(self, base: str) -> str:
+        """确定 SOSV 模型的根目录。
+
+        模型压缩包解压后通常会在目标目录内多出一层 sosv/ 子目录，
+        此时正确的根目录是 <base>/sosv 而非 <base>。这里按 sensevoice/model*.onnx
+        是否存在自动探测，两种结构都能正常工作。
+        """
+        def has_sense_voice(path: str) -> bool:
+            sense_dir = os.path.join(path, 'sensevoice')
+            if not os.path.isdir(sense_dir):
+                return False
+            return any(
+                f.startswith('model') and f.endswith('.onnx')
+                for f in os.listdir(sense_dir)
+            )
+
+        for candidate in (base, os.path.join(base, 'sosv')):
+            try:
+                if has_sense_voice(candidate):
+                    return candidate
+            except OSError:
+                continue
+        return base
+
+    def _check_model_files(self):
+        """校验 SOSV 所需的全部模型文件是否齐全，缺失则抛出可读的错误。"""
+        required = [
+            f"sensevoice/model{self.ext}.onnx",
+            "sensevoice/tokens.txt",
+            "silero_vad.onnx",
+        ]
+        if self.source == 'en':
+            required += [f"punct-en/model{self.ext}.onnx", "punct-en/bpe.vocab"]
+        else:
+            required += [f"punct/model{self.ext}.onnx"]
+
+        missing = [rel for rel in required if not os.path.isfile(os.path.join(self.model_path, rel))]
+        if missing:
+            detail = '、'.join(os.path.join(self.model_path, rel) for rel in missing)
+            raise FileNotFoundError(
+                f"SOSV 模型文件缺失或不完整，未找到：{detail}。"
+                f"请确认模型已正确下载解压到模型目录，"
+                f"并在设置中填写正确的 SOSV 路径（当前使用：{self.model_path}）。"
+            )
 
     def start(self):
         """启动 Sense Voice 模型"""
