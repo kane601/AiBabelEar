@@ -8,7 +8,7 @@ export const useCaptionStyleStore = defineStore('captionStyle', () => {
   const lineBreak = ref<number>(1)
   const fontFamily = ref<string>('sans-serif')
   const fontSize = ref<number>(24)
-  const fontColor = ref<string>('#000000')
+  const fontColor = ref<string>('#f0e442')
   const fontWeight = ref<number>(4)
   const background = ref<string>('#dbe2ef')
   const opacity = ref<number>(80)

@@ -13,7 +13,7 @@
       backgroundColor: bgActive ? captionStyle.backgroundRGBA : idleBg
     }"
   >
-    <div class="top-bar" :style="{ color: captionStyle.fontColor }">
+    <div class="top-bar" :style="{ color: barColor }">
       <div
         class="option-item"
         @pointerdown.stop
@@ -71,14 +71,14 @@
             <span>{{ captionData[captionData.length - val].text }}</span>
           </p>
           <p :class="[captionStyle.lineBreak?'':'left-ellipsis']"
-            v-if="captionStyle.transDisplay && captionData[captionData.length - val].translation"
+            v-if="captionStyle.transDisplay && translation"
             :style="{
             fontFamily: captionStyle.transFontFamily,
             fontSize: captionStyle.transFontSize + 'px',
             color: captionStyle.transFontColor,
             fontWeight: captionStyle.transFontWeight * 100
           }">
-            <span>{{ captionData[captionData.length - val].translation }}</span>
+            <span>{{ captionData[captionData.length - val].translation || NBSP }}</span>
           </p>
         </template>
       </template>
@@ -93,7 +93,7 @@
             <span>{{ $t('example.original') }}</span>
           </p>
           <p :class="[captionStyle.lineBreak?'':'left-ellipsis']"
-            v-if="captionStyle.transDisplay"
+            v-if="captionStyle.transDisplay && translation"
             :style="{
             fontFamily: captionStyle.transFontFamily,
             fontSize: captionStyle.transFontSize + 'px',
@@ -127,9 +127,12 @@ const captionStyle = useCaptionStyleStore();
 const captionLog = useCaptionLogStore();
 const { captionData } = storeToRefs(captionLog);
 const engineControl = useEngineControlStore();
-const { engineEnabled } = storeToRefs(engineControl);
+const { engineEnabled, translation } = storeToRefs(engineControl);
 const caption = ref();
 const windowHeight = ref(100);
+// 翻译尚未返回（或该条无翻译）时的占位内容。
+// 用不间断空格撑起行高，保证翻译行始终占位，避免窗口高度在有无翻译之间来回抖动。
+const NBSP = '\u00A0';
 // 锁定窗口：锁定后禁止拖拽与其它按钮操作，窗口固定在该位置显示
 const locked = ref(false);
 
@@ -172,6 +175,20 @@ function withAlpha(hex: string, alpha: number): string {
 // 而 alpha 只要 >= 1/255 即可命中，故取 ~1.5% 兼顾「几乎隐形」与「可靠接收鼠标事件」。
 const IDLE_BG_ALPHA = 0.015
 const idleBg = computed(() => withAlpha(captionStyle.background, IDLE_BG_ALPHA))
+
+// 顶栏按钮图标颜色：与字幕文字颜色解耦（否则调整字幕配色会连带改变按钮外观）。
+// 按钮仅在 hover 时可见，此时背景为字幕背景色，因此按背景明暗自动选取黑/白，
+// 无论用户把字幕背景配成浅色还是深色都能清晰可读。
+const barColor = computed(() => {
+  const hex = captionStyle.background.replace('#', '')
+  if (hex.length !== 6) return '#000000'
+  const r = parseInt(hex.slice(0, 2), 16)
+  const g = parseInt(hex.slice(2, 4), 16)
+  const b = parseInt(hex.slice(4, 6), 16)
+  if ([r, g, b].some((v) => Number.isNaN(v))) return '#000000'
+  const luminance = 0.299 * r + 0.587 * g + 0.114 * b
+  return luminance > 128 ? '#000000' : '#ffffff'
+})
 
 onMounted(() => {
   const resizeObserver = new ResizeObserver(entries => {
